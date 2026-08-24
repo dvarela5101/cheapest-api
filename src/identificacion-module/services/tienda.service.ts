@@ -30,6 +30,11 @@ export class TiendaService {
     return this.mapToResponse(tienda);
   }
 
+  async exists(id: string): Promise<boolean> {
+    const tienda = await this.tiendaRepository.findById(id);
+    return tienda !== null;
+  }
+
   async update(id: string, dto: UpdateTiendaDto): Promise<TiendaResponseDto> {
     const tienda = await this.tiendaRepository.findById(id);
     if (!tienda) {
