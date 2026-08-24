@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { QueryTiendaDto } from '../dtos';
-import { Tienda } from './entities';
+import { EstadoCaptacion, Tienda } from './entities';
 
 @Injectable()
 export class TiendaRepository {
@@ -11,27 +11,34 @@ export class TiendaRepository {
   ) {}
 
   async create(tienda: Partial<Tienda>): Promise<Tienda> {
-    // TODO: implementar
-    throw new Error('Not implemented');
+    const newTienda = this.repository.create(tienda)
+    return this.repository.save(newTienda);
   }
 
   async findAll(query: QueryTiendaDto): Promise<Tienda[]> {
-    // TODO: implementar
-    throw new Error('Not implemented');
+    const queryBuilder = this.repository.createQueryBuilder('tienda')
+
+
+    if(query.paisId){
+      queryBuilder.andWhere('tienda.paisId = :paisId',{ paisId :  query.paisId})
+    }
+    if(query.estadoCaptacion){
+      queryBuilder.andWhere('tienda.estadoCaptacion = :estatoCaptacion',{ EstadoCaptacion :  query.estadoCaptacion})
+    }
+    return queryBuilder.getMany();
   }
 
   async findById(id: string): Promise<Tienda | null> {
-    // TODO: implementar
-    throw new Error('Not implemented');
+    return this.repository.findOne({where:{id}});
   }
 
   async update(id: string, updates: Partial<Tienda>): Promise<Tienda | null> {
-    // TODO: implementar
-    throw new Error('Not implemented');
+    await this.repository.update(id, updates);
+    return this.findById(id);
   }
 
   async delete(id: string): Promise<boolean> {
-    // TODO: implementar
-    throw new Error('Not implemented');
+    const result = await this.repository.delete(id)
+    return (result.affected ?? 0 )> 0 
   }
 }

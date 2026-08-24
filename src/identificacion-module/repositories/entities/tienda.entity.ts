@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Pais } from './pais.entity';
 
 export enum EstadoCaptacion {
   PROSPECTO_CREADO = 'prospectoCreado',
@@ -30,6 +33,9 @@ export class Tienda {
   @Column('varchar', { length: 255 })
   responsableNombre: string;
 
+  @Column('uuid')
+  paisId: string;
+
   @Column('varchar', { length: 50 })
   rut: string;
 
@@ -51,4 +57,8 @@ export class Tienda {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Pais, (pais) => pais.tiendas)
+  @JoinColumn({ name: 'paisId' })
+  pais: Pais;
 }
